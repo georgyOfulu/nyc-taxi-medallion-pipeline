@@ -6,24 +6,7 @@ A production-style ETL pipeline built with **Databricks Delta Live Tables (DLT)*
 
 ## Architecture Overview
 
-```
-S3 (Parquet files)
-      |
-      v
-[Bronze] trips_bronze_1          <- Raw ingestion via Auto Loader, enforced schema, rescue column
-      |
-      v
-[Silver] trips_silver_1          <- Data quality checks, column selection, trip_month derived field
-      |
-      v
-[Silver] trips_silver_joined     <- Left join with payments SCD Type 2 lookup
-      |
-      v
-[Gold]   trips_gold_1            <- Aggregated revenue by month, payment type, payment description
-
-[Dimension] payments_lookup      <- Static seed: 6 payment type codes (Materialized View)
-[CDC]       payments_lookup_scd  <- SCD Type 2 history of payment lookup (Streaming Table)
-```
+![image_1772483078923.png](./image_1772483078923.png "image_1772483078923.png")
 
 ---
 
@@ -56,7 +39,7 @@ Failed records are tracked but not dropped (warn mode).
 ## Project Structure
 
 ```
-nyc-taxi-medallion-pipeline/
+simple_pipeline_project/
 ├── transformations/
 │   ├── my_transformation.py   # All DLT table definitions (Bronze, Silver, Gold, CDC)
 │   └── dimensions.py          # Seeds the payments_lookup Delta table
@@ -68,6 +51,7 @@ nyc-taxi-medallion-pipeline/
 ├── tests/
 │   ├── test_functions.py      # Unit tests for transformation logic
 │   └── run_unit_tests.py      # Test runner
+├── explorations/              # Ad-hoc notebooks for data exploration
 └── README.md
 ```
 
